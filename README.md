@@ -26,13 +26,20 @@ exist, or it can't be overridden.
       def save
         'saved'
       end
+      
+      def update
+        'updated'
+      end
     end
     
     class Turtle < Animal
       include ProxyMethod
     
-      proxy_class_method :create, "Don't create here, use Interactor!"
-      proxy_method :save, "Don't save here, use Interactor!"
+      proxy_class_method :create, "Don't create here, use an Interactor!"
+      proxy_instance_method :save, "Don't save here, use an Interactor!"
+      
+      # for instance methods, you can also just call "proxy_method"
+      proxy_method :update, "Don't update here, use an Interactor!"
     end
     
     Turtle.create

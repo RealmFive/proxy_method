@@ -9,12 +9,17 @@ class Animal
   def save
     'saved'
   end
+
+  def update
+    'updated'
+  end
 end
 
 class Turtle < Animal
   include ProxyMethod
 
   proxy_class_method :create, "Don't Create directly, use Interactor!"
+  proxy_instance_method :update, "Don't Update directly, use Interactor!"
   proxy_method :save, "Don't Save directly, use Interactor!"
 end
 
@@ -51,6 +56,14 @@ class ProxyMethodTest < MiniTest::Test
 
   def test_allows_proxied_instance_method_name_to_be_called
     assert 'saved', Turtle.new.unproxied_save
+  end
+
+  def test_aliases_proxy_method_to_proxy_instance_method
+    exception = assert_raises StandardError do
+      Turtle.new.update
+    end
+
+    assert_equal "Don't Update directly, use Interactor!", exception.message
   end
 
   def test_does_not_confuse_proxied_instance_method_with_class_method
