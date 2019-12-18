@@ -35,6 +35,12 @@ class MultiMonkey < Animal
   proxy_method [:save, :update]
 end
 
+class PrefixPelican < Animal
+  include ProxyMethod
+
+  proxy_method :save, prefix: 'pelican_'
+end
+
 class ProxyMethodTest < MiniTest::Test
   def test_does_not_allow_original_class_method_name_to_be_called
     exception = assert_raises StandardError do
@@ -96,7 +102,7 @@ class ProxyMethodTest < MiniTest::Test
     assert_equal "Disabled by proxy_method", exception.message
   end
 
-  def test_allow_for_multiple_methods
+  def test_allows_for_multiple_methods
     exception = assert_raises StandardError do
       MultiMonkey.new.save
     end
@@ -108,5 +114,15 @@ class ProxyMethodTest < MiniTest::Test
     end
 
     assert_equal "Disabled by proxy_method", exception.message
+  end
+
+  def test_allow_custom_prefix
+    exception = assert_raises StandardError do
+      PrefixPelican.new.save
+    end
+
+    assert_equal "Disabled by proxy_method", exception.message
+
+    assert 'saved', PrefixPelican.new.pelican_save
   end
 end

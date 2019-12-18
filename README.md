@@ -58,7 +58,7 @@ You can do this:
     Turtle.new.proxied_save
     # => 'saved'
 
-You can specify a custom error message:
+Specify a custom error message:
 
     class CustomCow < Animal
       include ProxyMethod
@@ -69,7 +69,7 @@ You can specify a custom error message:
     CustomCow.new.save
     # => RunTimeError: Don't save here, use an interactor!
 
-You can specify multiple methods at once:
+Specify multiple methods at once:
 
     class MultiMonkey < Animal
       include ProxyMethod
@@ -82,6 +82,17 @@ You can specify multiple methods at once:
     
     MultiMonkey.new.update
     # => RunTimeError: Use an interactor!    
+
+Supply your own prefix for the original, unproxied method:
+
+    class PrefixPelican < Animal
+      include ProxyMethod
+      
+      proxy_method :save, prefix: 'pelican'
+    end
+    
+    PrefixPelican.new.pelican_save
+    # => 'saved'
 
 ## Installation
 Add this line to your application's Gemfile:
