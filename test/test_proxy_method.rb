@@ -14,8 +14,12 @@ class Animal
     'saved'
   end
 
-  def update
-    'updated'
+  def update target=nil
+    ['updated', target].compact.join(' ')
+  end
+
+  def blocky(first, second)
+    yield(first, second)
   end
 end
 
@@ -46,6 +50,12 @@ class PrefixPelican < Animal
 
   proxy_class_method :create, prefix: 'pelican_'
   proxy_method :save, prefix: 'pelican_'
+end
+
+class ArgumentativeAardvark < Animal
+  include ProxyMethod
+
+  proxy_method :blocky
 end
 
 class ProxyMethodTest < MiniTest::Test
@@ -166,6 +176,27 @@ class ProxyMethodTest < MiniTest::Test
       assert_equal "Disabled by proxy_method", exception.message
 
       assert 'saved', PrefixPelican.new.pelican_save
+    end
+  end
+
+  describe "unproxied instance" do
+    it "allows methods to be called directly" do
+      assert_equal 'updated feathers', MultiMonkey.new.unproxied.update('feathers')
+
+      # ensure that it doesn't affect any other instances
+      exception = assert_raises StandardError do
+        MultiMonkey.new.update('feathers')
+      end
+
+      assert_equal "Disabled by proxy_method", exception.message
+    end
+
+    it "handles arguments and blocks" do
+      assert_equal 13, ArgumentativeAardvark.new.unproxied.blocky(6, 7){ |a, b| a + b }
+    end
+
+    it "handles custom prefixes" do
+      assert_equal 'saved', PrefixPelican.new.unproxied.save
     end
   end
 end
