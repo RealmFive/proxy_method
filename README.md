@@ -52,10 +52,10 @@ You can do this:
     Turtle.new.save
     # => RuntimeError: Disabled by proxy_method
     
-    Turtle.proxied_create
+    Turtle.unproxied_create
     # => 'created'
     
-    Turtle.new.proxied_save
+    Turtle.new.unproxied_save
     # => 'saved'
 
 Specify a custom error message:
@@ -88,7 +88,7 @@ Supply your own prefix for the original, unproxied method:
     class PrefixPelican < Animal
       include ProxyMethod
       
-      proxy_method :save, prefix: 'pelican'
+      proxy_method :save, prefix: 'pelican_'
     end
     
     PrefixPelican.new.pelican_save
