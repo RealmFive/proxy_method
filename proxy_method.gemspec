@@ -21,5 +21,5 @@ Gem::Specification.new do |spec|
 
   spec.license     = "MIT"
 
-  spec.files = Dir["lib/**/*"]
+  spec.files = Dir["{lib,test}/**/*", "Rakefile", "README.md"]
 end
