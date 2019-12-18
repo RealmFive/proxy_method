@@ -18,6 +18,8 @@ exist, or it can't be overridden.
 
 ## Usage
 
+Given these basic classes:
+
     class Animal
       def self.create
         'created'
@@ -35,25 +37,51 @@ exist, or it can't be overridden.
     class Turtle < Animal
       include ProxyMethod
     
-      proxy_class_method :create, "Don't create here, use an Interactor!"
-      proxy_instance_method :save, "Don't save here, use an Interactor!"
+      proxy_class_method :create
+      proxy_instance_method :save
       
       # for instance methods, you can also just call "proxy_method"
-      proxy_method :update, "Don't update here, use an Interactor!"
+      proxy_method :update
     end
-    
+
+You can do this:
+
     Turtle.create
-    # => RuntimeError: Don't create here, use an Interactor!
+    # => RuntimeError: Disabled by proxy_method
     
     Turtle.new.save
-    # => RuntimeError: Don't save here, use an Interactor!
+    # => RuntimeError: Disabled by proxy_method
     
     Turtle.proxied_create
     # => 'created'
     
-    Turtle.new.save
+    Turtle.new.proxied_save
     # => 'saved'
 
+You can specify a custom error message:
+
+    class CustomCow < Animal
+      include ProxyMethod
+      
+      proxy_method :save, "Don't save here, use an interactor!"
+    end
+    
+    CustomCow.new.save
+    # => RunTimeError: Don't save here, use an interactor!
+
+You can specify multiple methods at once:
+
+    class MultiMonkey < Animal
+      include ProxyMethod
+      
+      proxy_method [:save, :update], "Use an interactor!"
+    end
+    
+    MultiMonkey.new.save
+    # => RunTimeError: Use an interactor!
+    
+    MultiMonkey.new.update
+    # => RunTimeError: Use an interactor!    
 
 ## Installation
 Add this line to your application's Gemfile:

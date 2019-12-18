@@ -29,6 +29,12 @@ class DefaultCow < Animal
   proxy_method :save
 end
 
+class MultiMonkey < Animal
+  include ProxyMethod
+
+  proxy_method [:save, :update]
+end
+
 class ProxyMethodTest < MiniTest::Test
   def test_does_not_allow_original_class_method_name_to_be_called
     exception = assert_raises StandardError do
@@ -85,6 +91,20 @@ class ProxyMethodTest < MiniTest::Test
   def test_provides_default_error_message
     exception = assert_raises StandardError do
       DefaultCow.new.save
+    end
+
+    assert_equal "Disabled by proxy_method", exception.message
+  end
+
+  def test_allow_for_multiple_methods
+    exception = assert_raises StandardError do
+      MultiMonkey.new.save
+    end
+
+    assert_equal "Disabled by proxy_method", exception.message
+
+    exception = assert_raises StandardError do
+      MultiMonkey.new.update
     end
 
     assert_equal "Disabled by proxy_method", exception.message
