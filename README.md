@@ -1,4 +1,4 @@
-# ProxyMethod
+# proxy_method
 
 Prevent running an inherited method directly.
 
