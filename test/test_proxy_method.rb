@@ -23,6 +23,12 @@ class Turtle < Animal
   proxy_method :save, "Don't Save directly, use Interactor!"
 end
 
+class DefaultCow < Animal
+  include ProxyMethod
+
+  proxy_method :save
+end
+
 class ProxyMethodTest < MiniTest::Test
   def test_does_not_allow_original_class_method_name_to_be_called
     exception = assert_raises StandardError do
@@ -74,5 +80,13 @@ class ProxyMethodTest < MiniTest::Test
     assert_raises NoMethodError do
       Turtle.new.unproxied_create
     end
+  end
+
+  def test_provides_default_error_message
+    exception = assert_raises StandardError do
+      DefaultCow.new.save
+    end
+
+    assert_equal "Disabled by proxy_method", exception.message
   end
 end

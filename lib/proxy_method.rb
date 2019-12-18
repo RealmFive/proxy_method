@@ -1,11 +1,13 @@
 module ProxyMethod
   module ClassMethods
-    def proxy_class_method original_method_name, error_message
+    DEFAULT_PROXY_MESSAGE = "Disabled by proxy_method"
+
+    def proxy_class_method(original_method_name, error_message = DEFAULT_PROXY_MESSAGE)
       self.singleton_class.send(:alias_method, :"unproxied_#{original_method_name}", original_method_name)
       define_singleton_method(original_method_name){ raise error_message }
     end
 
-    def proxy_instance_method original_method_name, error_message
+    def proxy_instance_method(original_method_name, error_message = DEFAULT_PROXY_MESSAGE)
       alias_method :"unproxied_#{original_method_name}", original_method_name
       define_method(original_method_name){ raise error_message }
     end
