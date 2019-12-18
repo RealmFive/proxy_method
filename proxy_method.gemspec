@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.version     = ProxyMethod::VERSION
   spec.authors     = ["Jaime Bellmyer"]
   spec.email       = ["online@bellmyer.com"]
-  spec.homepage    = "https://rubygems.org/gems/proxy_method"
+  spec.homepage    = "https://github.com/Intellifarm/proxy_method"
   spec.summary     = "Prevent running an inherited method directly"
 
   spec.description = <<-TURTLES
