@@ -6,6 +6,10 @@ class Animal
     'created'
   end
 
+  def self.destroy_all
+    'destroyed'
+  end
+
   def save
     'saved'
   end
@@ -23,106 +27,145 @@ class Turtle < Animal
   proxy_method :save, message: "Don't Save directly, use Interactor!"
 end
 
-class DefaultCow < Animal
+class DefaultDuck < Animal
   include ProxyMethod
 
+  proxy_class_method :create
   proxy_method :save
 end
 
 class MultiMonkey < Animal
   include ProxyMethod
 
+  proxy_class_method [:create, :destroy_all]
   proxy_method [:save, :update]
 end
 
 class PrefixPelican < Animal
   include ProxyMethod
 
+  proxy_class_method :create, prefix: 'pelican_'
   proxy_method :save, prefix: 'pelican_'
 end
 
 class ProxyMethodTest < MiniTest::Test
-  def test_does_not_allow_original_class_method_name_to_be_called
-    exception = assert_raises StandardError do
-      Turtle.create
+  describe "proxying class methods" do
+    it "does not allow original method name to be called" do
+      exception = assert_raises StandardError do
+        Turtle.create
+      end
+
+      assert_equal "Don't Create directly, use Interactor!", exception.message
     end
 
-    assert_equal "Don't Create directly, use Interactor!", exception.message
+    it "allows proxied method name to be called" do
+      assert 'created', Turtle.unproxied_create
+    end
+
+    it "does not confuse proxied class method with instance method" do
+      assert_raises NoMethodError do
+        Turtle.save
+      end
+
+      assert_raises NoMethodError do
+        Turtle.unproxied_save
+      end
+    end
+
+    it "provides default error message" do
+      exception = assert_raises StandardError do
+        DefaultDuck.create
+      end
+
+      assert_equal "Disabled by proxy_method", exception.message
+    end
+
+    it "allows for multiple methods to be proxied in one call" do
+      exception = assert_raises StandardError do
+        MultiMonkey.create
+      end
+
+      assert_equal "Disabled by proxy_method", exception.message
+
+      exception = assert_raises StandardError do
+        MultiMonkey.destroy_all
+      end
+
+      assert_equal "Disabled by proxy_method", exception.message
+    end
+
+    it "allows for a custom prefix" do
+      exception = assert_raises StandardError do
+        PrefixPelican.create
+      end
+
+      assert_equal "Disabled by proxy_method", exception.message
+
+      assert 'created', PrefixPelican.pelican_create
+    end
   end
 
-  def test_allows_proxied_class_method_name_to_be_called
-    assert 'created', Turtle.unproxied_create
-  end
+  describe "proxying instance methods" do
+    it "does not allow original method name to be called" do
+      exception = assert_raises StandardError do
+        Turtle.new.save
+      end
 
-  def test_does_not_confuse_proxied_class_method_with_instance_method
-    assert_raises NoMethodError do
-      Turtle.save
+      assert_equal "Don't Save directly, use Interactor!", exception.message
     end
 
-    assert_raises NoMethodError do
-      Turtle.unproxied_save
-    end
-  end
-
-  def test_does_not_allow_original_instance_method_name_to_be_called
-    exception = assert_raises StandardError do
-      Turtle.new.save
+    it "allows proxied method name to be called" do
+      assert 'saved', Turtle.new.unproxied_save
     end
 
-    assert_equal "Don't Save directly, use Interactor!", exception.message
-  end
+    it "does not confuse proxied class method with instance method" do
+      assert_raises NoMethodError do
+        Turtle.new.create
+      end
 
-  def test_allows_proxied_instance_method_name_to_be_called
-    assert 'saved', Turtle.new.unproxied_save
-  end
-
-  def test_aliases_proxy_method_to_proxy_instance_method
-    exception = assert_raises StandardError do
-      Turtle.new.update
+      assert_raises NoMethodError do
+        Turtle.new.unproxied_create
+      end
     end
 
-    assert_equal "Don't Update directly, use Interactor!", exception.message
-  end
+    it "aliases proxy_method to proxy_instance_method" do
+      exception = assert_raises StandardError do
+        Turtle.new.update
+      end
 
-  def test_does_not_confuse_proxied_instance_method_with_class_method
-    assert_raises NoMethodError do
-      Turtle.new.create
+      assert_equal "Don't Update directly, use Interactor!", exception.message
     end
 
-    assert_raises NoMethodError do
-      Turtle.new.unproxied_create
-    end
-  end
+    it "provides default error message" do
+      exception = assert_raises StandardError do
+        DefaultDuck.new.save
+      end
 
-  def test_provides_default_error_message
-    exception = assert_raises StandardError do
-      DefaultCow.new.save
+      assert_equal "Disabled by proxy_method", exception.message
     end
 
-    assert_equal "Disabled by proxy_method", exception.message
-  end
+    it "allows for multiple methods to be proxied in one call" do
+      exception = assert_raises StandardError do
+        MultiMonkey.new.save
+      end
 
-  def test_allows_for_multiple_methods
-    exception = assert_raises StandardError do
-      MultiMonkey.new.save
+      assert_equal "Disabled by proxy_method", exception.message
+
+      exception = assert_raises StandardError do
+        MultiMonkey.new.update
+      end
+
+      assert_equal "Disabled by proxy_method", exception.message
     end
 
-    assert_equal "Disabled by proxy_method", exception.message
+    it "allows for a custom prefix" do
+      exception = assert_raises StandardError do
+        PrefixPelican.new.save
+      end
 
-    exception = assert_raises StandardError do
-      MultiMonkey.new.update
+      assert_equal "Disabled by proxy_method", exception.message
+
+      assert 'saved', PrefixPelican.new.pelican_save
     end
-
-    assert_equal "Disabled by proxy_method", exception.message
-  end
-
-  def test_allow_custom_prefix
-    exception = assert_raises StandardError do
-      PrefixPelican.new.save
-    end
-
-    assert_equal "Disabled by proxy_method", exception.message
-
-    assert 'saved', PrefixPelican.new.pelican_save
   end
 end
