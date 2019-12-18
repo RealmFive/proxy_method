@@ -63,7 +63,7 @@ You can specify a custom error message:
     class CustomCow < Animal
       include ProxyMethod
       
-      proxy_method :save, "Don't save here, use an interactor!"
+      proxy_method :save, message: "Don't save here, use an interactor!"
     end
     
     CustomCow.new.save
@@ -74,7 +74,7 @@ You can specify multiple methods at once:
     class MultiMonkey < Animal
       include ProxyMethod
       
-      proxy_method [:save, :update], "Use an interactor!"
+      proxy_method [:save, :update], message: "Use an interactor!"
     end
     
     MultiMonkey.new.save

@@ -18,9 +18,9 @@ end
 class Turtle < Animal
   include ProxyMethod
 
-  proxy_class_method :create, "Don't Create directly, use Interactor!"
-  proxy_instance_method :update, "Don't Update directly, use Interactor!"
-  proxy_method :save, "Don't Save directly, use Interactor!"
+  proxy_class_method :create, message: "Don't Create directly, use Interactor!"
+  proxy_instance_method :update, message: "Don't Update directly, use Interactor!"
+  proxy_method :save, message: "Don't Save directly, use Interactor!"
 end
 
 class DefaultCow < Animal
