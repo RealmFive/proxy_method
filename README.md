@@ -94,6 +94,18 @@ Supply your own prefix for the original, unproxied method:
     PrefixPelican.new.pelican_save
     # => 'saved'
 
+"Unproxy" an instance:
+
+    class DefaultDuck < Animal
+      include ProxyMethod
+      
+      proxy_method :save
+    end
+    
+    duck = DefaultDuck.new.unproxied
+    duck.save
+    # => 'saved'
+
 ## Installation
 Add this line to your application's Gemfile:
 
