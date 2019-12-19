@@ -94,7 +94,7 @@ Supply your own prefix for the original, unproxied method:
     PrefixPelican.new.pelican_save
     # => 'saved'
 
-"Unproxy" an instance:
+Use an "unproxied" version of an instance:
 
     class DefaultDuck < Animal
       include ProxyMethod
@@ -102,9 +102,32 @@ Supply your own prefix for the original, unproxied method:
       proxy_method :save
     end
     
-    duck = DefaultDuck.new.unproxied
+    duck = DefaultDuck.new
+    duck_unproxied = duck.unproxied
+    
     duck.save
+    # => RunTimeError: Disabled by proxy_method 
+    
+    duck_unproxied.save
     # => 'saved'
+
+
+This is important, because if you proxy a method like `#save` in ActiveRecord,
+you're also preventing the natural use of `#create` and `#update` since these
+rely on `#save` under the hood. "Unproxying" the entire instance then frees
+an interactor to use `#create`, `#update` and `#save` in an intentional way.
+
+You can also use an unproxied version of the entire class:
+
+    duck = DefaultDuck.new
+    duck_unproxied = DefaultDuck.unproxied.new
+    
+    duck.save
+    # => RunTimeError: Disabled by proxy_method 
+    
+    duck_unproxied.save
+    # => 'saved'
+
 
 ## Installation
 Add this line to your application's Gemfile:
