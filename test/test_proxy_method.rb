@@ -138,6 +138,17 @@ class ProxyMethodTest < MiniTest::Test
         assert_equal 'created', PrefixPelican.unproxied.create
       end
     end
+
+    it "leaves the original proxied" do
+      duck_unproxied = DefaultDuck.unproxied
+      duck_proxied = DefaultDuck
+
+      assert_equal 'created', duck_unproxied.create
+
+      assert_raises StandardError do
+        duck_proxied.create
+      end
+    end
   end
 
   describe "proxying instance methods" do
@@ -222,6 +233,17 @@ class ProxyMethodTest < MiniTest::Test
 
     it "handles custom prefixes" do
       assert_equal 'saved', PrefixPelican.new.unproxied.save
+    end
+
+    it "leaves the original proxied" do
+      duck_proxied = DefaultDuck.new
+      duck_unproxied = duck_proxied.unproxied
+
+      assert_equal 'saved', duck_unproxied.save
+
+      assert_raises StandardError do
+        duck_proxied.save
+      end
     end
   end
 end

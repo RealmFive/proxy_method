@@ -62,8 +62,20 @@ module ProxyMethod
     alias_method :proxy_method, :proxy_instance_method
 
     def unproxied
-      @_proxy_class_methods_enabled = false
+      self.dup.unproxy!
+    end
 
+    def proxied
+      self.dup.proxy!
+    end
+
+    def unproxy!
+      @_proxy_class_methods_enabled = false
+      self
+    end
+
+    def reproxy!
+      @_proxy_class_methods_enabled = true
       self
     end
   end
@@ -78,8 +90,20 @@ module ProxyMethod
   end
 
   def unproxied
-    @_proxy_instance_methods_enabled = false
+    self.dup.unproxy!
+  end
 
+  def proxied
+    self.dup.proxy!
+  end
+
+  def unproxy!
+    @_proxy_instance_methods_enabled = false
+    self
+  end
+
+  def reproxy!
+    @_proxy_instance_methods_enabled = true
     self
   end
 end
