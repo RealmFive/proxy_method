@@ -2,12 +2,16 @@ require 'minitest/autorun'
 require 'proxy_method'
 
 class Animal
-  def self.create
-    'created'
+  def self.create target=nil
+    ['created', target].compact.join(' ')
   end
 
   def self.destroy_all
     'destroyed'
+  end
+
+  def self.blocky(first, second)
+    yield(first, second)
   end
 
   def save
@@ -112,6 +116,27 @@ class ProxyMethodTest < MiniTest::Test
       assert_equal "Disabled by proxy_method", exception.message
 
       assert 'created', PrefixPelican.pelican_create
+    end
+
+    describe "unproxied class" do
+      it "allows methods to be called directly" do
+        assert_equal 'created feathers', MultiMonkey.unproxied.create('feathers')
+
+        # ensure that it doesn't affect any other classes
+        exception = assert_raises StandardError do
+          DefaultDuck.create('feathers')
+        end
+
+        assert_equal "Disabled by proxy_method", exception.message
+      end
+
+      it "handles arguments and blocks" do
+        assert_equal 13, ArgumentativeAardvark.unproxied.blocky(6, 7){ |a, b| a + b }
+      end
+
+      it "handles custom prefixes" do
+        assert_equal 'created', PrefixPelican.unproxied.create
+      end
     end
   end
 
