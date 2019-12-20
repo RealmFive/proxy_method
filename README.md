@@ -58,12 +58,12 @@ You can do this:
     Turtle.new.unproxied_save
     # => 'saved'
 
-Specify a custom error message:
+Raise a custom error message:
 
     class CustomCow < Animal
       include ProxyMethod
       
-      proxy_method :save, message: "Don't save here, use an interactor!"
+      proxy_method :save, raise: "Don't save here, use an interactor!"
     end
     
     CustomCow.new.save
@@ -74,7 +74,7 @@ Specify multiple methods at once:
     class MultiMonkey < Animal
       include ProxyMethod
       
-      proxy_method [:save, :update], message: "Use an interactor!"
+      proxy_method [:save, :update], raise: "Use an interactor!"
     end
     
     MultiMonkey.new.save

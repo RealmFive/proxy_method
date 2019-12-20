@@ -19,7 +19,7 @@ module ProxyMethod
     def proxy_class_method(original_method_names, options = {})
       original_method_names = Array(original_method_names)
 
-      error_message = options[:message] || DEFAULT_PROXY_MESSAGE
+      error_message = options[:raise] || DEFAULT_PROXY_MESSAGE
       prefix = options[:prefix] || DEFAULT_PREFIX
 
       original_method_names.each do |original_method_name|
@@ -40,7 +40,7 @@ module ProxyMethod
     def proxy_instance_method(original_method_names, options = {})
       original_method_names = Array(original_method_names)
 
-      error_message = options[:message] || DEFAULT_PROXY_MESSAGE
+      error_message = options[:raise] || DEFAULT_PROXY_MESSAGE
       prefix = options[:prefix] || DEFAULT_PREFIX
 
       original_method_names.each do |original_method_name|
