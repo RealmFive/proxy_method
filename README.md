@@ -74,7 +74,7 @@ Specify multiple methods at once:
     class MultiMonkey < Animal
       include ProxyMethod
       
-      proxy_method [:save, :update], raise: "Use an interactor!"
+      proxy_method :save, :update, raise: "Use an interactor!"
     end
     
     MultiMonkey.new.save
@@ -150,7 +150,7 @@ From there, you can allow your proxied block it to be used for multiple methods:
     class MethodicalMeerkat < Animal
       include ProxyMethod
       
-      proxy_method([:save, :update]) do |object, method_name|
+      proxy_method(:save, :update) do |object, method_name|
         "indirectly #{object.send(method_name)}!"
       end
     end

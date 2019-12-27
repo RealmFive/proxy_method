@@ -52,6 +52,20 @@ class ProxyMethodTest < MiniTest::Test
       assert_equal "Disabled by proxy_method", exception.message
     end
 
+    it "allows multiple methods to be specified as a list of arguments" do
+      exception = assert_raises StandardError do
+        ListyLeopard.create
+      end
+
+      assert_equal "Disabled by proxy_method", exception.message
+
+      exception = assert_raises StandardError do
+        ListyLeopard.destroy_all
+      end
+
+      assert_equal "Disabled by proxy_method", exception.message
+    end
+
     it "allows for a custom prefix" do
       exception = assert_raises StandardError do
         PrefixPelican.create
@@ -138,7 +152,7 @@ class ProxyMethodTest < MiniTest::Test
       assert_equal 'indirectly saved!', MethodicalMeerkat.new.save
     end
 
-    it "allows for multiple methods to be proxied in one call" do
+    it "allows multiple methods to be proxied in one call" do
       exception = assert_raises StandardError do
         MultiMonkey.new.save
       end
@@ -147,6 +161,20 @@ class ProxyMethodTest < MiniTest::Test
 
       exception = assert_raises StandardError do
         MultiMonkey.new.update
+      end
+
+      assert_equal "Disabled by proxy_method", exception.message
+    end
+
+    it "allows multiple methods to be specified as a list of arguments" do
+      exception = assert_raises StandardError do
+        ListyLeopard.new.save
+      end
+
+      assert_equal "Disabled by proxy_method", exception.message
+
+      exception = assert_raises StandardError do
+        ListyLeopard.new.update
       end
 
       assert_equal "Disabled by proxy_method", exception.message

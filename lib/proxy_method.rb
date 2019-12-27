@@ -16,8 +16,14 @@ module ProxyMethod
       @_proxy_class_methods_enabled = true
     end
 
-    def proxy_class_method(original_method_names, options = {}, &proxy_block)
-      original_method_names = Array(original_method_names)
+    def proxy_class_method(*original_method_names, &proxy_block)
+      options = if original_method_names.last.is_a?(Hash)
+        original_method_names.pop
+      else
+        {}
+      end
+
+      original_method_names = Array(original_method_names).flatten
 
       error_message = options[:raise] || DEFAULT_PROXY_MESSAGE
       prefix = options[:prefix] || DEFAULT_PREFIX
@@ -41,8 +47,14 @@ module ProxyMethod
       end
     end
 
-    def proxy_instance_method(original_method_names, options = {}, &proxy_block)
-      original_method_names = Array(original_method_names)
+    def proxy_instance_method(*original_method_names, &proxy_block)
+      options = if original_method_names.last.is_a?(Hash)
+        original_method_names.pop
+      else
+        {}
+      end
+
+      original_method_names = Array(original_method_names).flatten
 
       error_message = options[:raise] || DEFAULT_PROXY_MESSAGE
       prefix = options[:prefix] || DEFAULT_PREFIX
