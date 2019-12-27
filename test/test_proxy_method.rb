@@ -62,6 +62,18 @@ class ArgumentativeAardvark < Animal
   proxy_method :blocky
 end
 
+class MethodicalMeerkat < Animal
+  include ProxyMethod
+
+  proxy_class_method(:create) do |klass, method_name, *args, &block|
+    'indirectly ' + klass.unproxied.send(method_name, *args, &block) + '!'
+  end
+
+  proxy_method(:save) do |object, method_name, *args, &block|
+    'indirectly ' + object.unproxied.send(method_name, *args, &block) + '!'
+  end
+end
+
 class ProxyMethodTest < MiniTest::Test
   describe "proxying class methods" do
     it "does not allow original method name to be called" do
@@ -92,6 +104,10 @@ class ProxyMethodTest < MiniTest::Test
       end
 
       assert_equal "Disabled by proxy_method", exception.message
+    end
+
+    it "allows an alternate block to be run instead of an exception" do
+      assert_equal 'indirectly created!', MethodicalMeerkat.create
     end
 
     it "allows for multiple methods to be proxied in one call" do
@@ -188,6 +204,10 @@ class ProxyMethodTest < MiniTest::Test
       end
 
       assert_equal "Disabled by proxy_method", exception.message
+    end
+
+    it "allows an alternate block to be run instead of an exception" do
+      assert_equal 'indirectly saved!', MethodicalMeerkat.new.save
     end
 
     it "allows for multiple methods to be proxied in one call" do

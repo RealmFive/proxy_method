@@ -16,7 +16,7 @@ module ProxyMethod
       @_proxy_class_methods_enabled = true
     end
 
-    def proxy_class_method(original_method_names, options = {})
+    def proxy_class_method(original_method_names, options = {}, &proxy_block)
       original_method_names = Array(original_method_names)
 
       error_message = options[:raise] || DEFAULT_PROXY_MESSAGE
@@ -29,7 +29,11 @@ module ProxyMethod
         self.singleton_class.send(:alias_method, new_method_name, original_method_name)
         define_singleton_method(original_method_name) do |*args, &block|
           if proxy_class_methods_enabled?
-            raise error_message
+            if proxy_block
+              proxy_block.call(self, original_method_name, *args, &block)
+            else
+              raise error_message
+            end
           else
             send(new_method_name, *args, &block)
           end
@@ -37,7 +41,7 @@ module ProxyMethod
       end
     end
 
-    def proxy_instance_method(original_method_names, options = {})
+    def proxy_instance_method(original_method_names, options = {}, &proxy_block)
       original_method_names = Array(original_method_names)
 
       error_message = options[:raise] || DEFAULT_PROXY_MESSAGE
@@ -51,7 +55,11 @@ module ProxyMethod
 
         define_method(original_method_name) do |*args, &block|
           if proxy_instance_methods_enabled?
-            raise error_message
+            if proxy_block
+              proxy_block.call(self, original_method_name, *args, &block)
+            else
+              raise error_message
+            end
           else
             send(new_method_name, *args, &block)
           end
@@ -66,7 +74,7 @@ module ProxyMethod
     end
 
     def proxied
-      self.dup.proxy!
+      self.dup.reproxy!
     end
 
     def unproxy!
@@ -94,7 +102,7 @@ module ProxyMethod
   end
 
   def proxied
-    self.dup.proxy!
+    self.dup.reproxy!
   end
 
   def unproxy!
