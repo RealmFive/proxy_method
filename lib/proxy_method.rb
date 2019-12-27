@@ -30,7 +30,7 @@ module ProxyMethod
         define_singleton_method(original_method_name) do |*args, &block|
           if proxy_class_methods_enabled?
             if proxy_block
-              proxy_block.call(self, original_method_name, *args, &block)
+              proxy_block.call(self.unproxied, original_method_name, *args, &block)
             else
               raise error_message
             end
@@ -56,7 +56,7 @@ module ProxyMethod
         define_method(original_method_name) do |*args, &block|
           if proxy_instance_methods_enabled?
             if proxy_block
-              proxy_block.call(self, original_method_name, *args, &block)
+              proxy_block.call(self.unproxied, original_method_name, *args, &block)
             else
               raise error_message
             end
