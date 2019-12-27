@@ -128,6 +128,57 @@ You can also use an unproxied version of the entire class:
     duck_unproxied.save
     # => 'saved'
 
+Run a custom block, instead of raising an exception at all. In other words, *actually* proxy the
+method! The object which is passed to the block is already unproxied, you don't have to do this
+yourself:
+
+    class MethodicalMeerkat < Animal
+      include ProxyMethod
+      
+      proxy_method(:save) do |unproxied_object|
+        "indirectly #{unproxied_object.save}!"
+      end
+    end
+    
+    MethodicalMeerkat.new.save
+    # => 'indirectly saved!'
+
+The object which is passed to the block is already unproxied, so it's free to use as you'd expect.
+
+From there, you can allow your proxied block it to be used for multiple methods:
+
+    class MethodicalMeerkat < Animal
+      include ProxyMethod
+      
+      proxy_method([:save, :update]) do |object, method_name|
+        "indirectly #{object.send(method_name)}!"
+      end
+    end
+    
+    MethodicalMeerkat.new.save
+    # => 'indirectly saved!'
+    
+    MethodicalMeerkat.new.update
+    # => 'indirectly updated!'    
+
+Provide your proxied block with args and a block of its own. The block will be given the
+unproxied object itself, followed by the standard arguments to `method_missing`, 
+so it works in much the same way.
+
+    class MethodicalMeerkat < Animal
+      include ProxyMethod
+      
+      proxy_method(:save) do |object, method_name, *args, &block|
+        "indirectly #{object.send(method_name, *args, &block)}!"
+      end
+    end
+    
+    MethodicalMeerkat.new.save
+    # => 'indirectly saved!'
+    
+    MethodicalMeerkat.new.update
+    # => 'indirectly updated!'    
+
 
 ## Installation
 Add this line to your application's Gemfile:
