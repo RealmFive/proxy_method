@@ -81,20 +81,33 @@ module ProxyMethod
 
     alias_method :proxy_method, :proxy_instance_method
 
+    ##
+    # Return an unproxied version of this class.
+    #
+    # This returns a copy of the class where all proxies are disabled. This is
+    # sometimes necessary when a proxied method is being called by a different
+    # method outside your control.
+
     def unproxied
       self.dup.unproxy!
     end
+
+    ##
+    # Return a proxied version of this class.
+    #
+    # If the class has previously been "unproxied", this returns a
+    # copy where all proxies are re-enabled.
 
     def proxied
       self.dup.reproxy!
     end
 
-    def unproxy!
+    def unproxy! # :nodoc:
       @_proxy_class_methods_enabled = false
       self
     end
 
-    def reproxy!
+    def reproxy! # :nodoc:
       @_proxy_class_methods_enabled = true
       self
     end
