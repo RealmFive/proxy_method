@@ -89,7 +89,7 @@ module ProxyMethod
     # method outside your control.
 
     def unproxied
-      self.dup.unproxy!
+      self.dup.send(:unproxy!)
     end
 
     ##
@@ -99,8 +99,10 @@ module ProxyMethod
     # copy where all proxies are re-enabled.
 
     def proxied
-      self.dup.reproxy!
+      self.dup.send(:reproxy!)
     end
+
+    private
 
     def unproxy! # :nodoc:
       @_proxy_class_methods_enabled = false
@@ -123,12 +125,14 @@ module ProxyMethod
   end
 
   def unproxied
-    self.dup.unproxy!
+    self.dup.send(:unproxy!)
   end
 
   def proxied
-    self.dup.reproxy!
+    self.dup.send(:reproxy!)
   end
+
+  private
 
   def unproxy!
     @_proxy_instance_methods_enabled = false
