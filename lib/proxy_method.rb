@@ -3,6 +3,81 @@ module ProxyMethod
     DEFAULT_PROXY_MESSAGE = 'Disabled by proxy_method'
     DEFAULT_PREFIX = 'unproxied_'
 
+    ##
+    # Proxy one or more inherited class methods, so that they are not used
+    # directly. Given this base class:
+    #
+    #     class Animal
+    #       def self.create
+    #         'created'
+    #       end
+    #
+    #       def destroy
+    #         'destroyed'
+    #       end
+    #     end
+    #
+    # The simplest implementation is to pass just a single method name:
+    #
+    #     class Dog < Animal
+    #       proxy_class_method :create
+    #     end
+    #
+    #     Dog.create
+    #     # => RuntimeError: Disabled by proxy_method
+    #
+    #     Dog.destroy
+    #     # 'destroyed'
+    #
+    # Or multiple method names:
+    #
+    #     class Dog < Animal
+    #       proxy_class_method :create, :destroy
+    #     end
+    #
+    #     Dog.create
+    #     # => RuntimeError: Disabled by proxy_method
+    #
+    #     Dog.destroy
+    #     # => RuntimeError: Disabled by proxy_method
+    #
+    # With a custom error message:
+    #
+    #     class Dog < Animal
+    #       proxy_class_method :create, raise: 'Disabled!'
+    #     end
+    #
+    #     Dog.create
+    #     # => RuntimeError: Disabled!
+    #
+    # You can still access the unproxied version by prefixing 'unproxied'
+    # to the method name:
+    #
+    #     Dog.unproxied_create
+    #     # => 'created'
+    #
+    # And you can change the prefix for unproxied versions:
+    #
+    #     class Dog < Animal
+    #       proxy_class_method :create, prefix: 'original_'
+    #     end
+    #
+    #     Dog.original_create
+    #     # => 'created'
+    #
+    # Finally, you can actually *proxy* the method, by providing an
+    # alternative block of code to run:
+    #
+    #     class Dog < Animal
+    #       proxy_class_method(:create) do |object, method_name, *args, &block|
+    #         "indirectly #{object.send(method_name)}"
+    #       end
+    #     end
+    #
+    #     Dog.original_create
+    #     # => 'indirectly created'
+
+
     def proxy_class_method(*original_method_names, &proxy_block)
       options = if original_method_names.last.is_a?(Hash)
         original_method_names.pop
