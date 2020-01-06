@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby
 
-VERSION_FILE = './proxy_method/version'
-level = ARGV.shift
+VERSION_FILE = './lib/proxy_method/version.rb'
 
-require VERSION_FILE
+require_relative VERSION_FILE
 
 def new_version
   return @new_version if defined?(@new_version)
 
+  level = ARGV.shift
   major, minor, patch = ProxyMethod::VERSION.split('.').map(&:to_i)
 
   case level

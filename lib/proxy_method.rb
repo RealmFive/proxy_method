@@ -104,12 +104,12 @@ module ProxyMethod
       @_proxied_class_methods ||= {}
     end
 
-    def unproxy! # :nodoc:
+    def unproxy!
       @_proxy_class_methods_enabled = false
       self
     end
 
-    def reproxy! # :nodoc:
+    def reproxy!
       @_proxy_class_methods_enabled = true
       self
     end
@@ -119,9 +119,22 @@ module ProxyMethod
     base.extend ClassMethods
   end
 
+  ##
+  # Return an unproxied version of this instance.
+  #
+  # This returns a copy of the instance where all proxies are disabled. This is
+  # sometimes necessary when a proxied method is being called by a different
+  # method outside your control.
+
   def unproxied
     self.dup.send(:unproxy!)
   end
+
+  ##
+  # Return a proxied version of this instance.
+  #
+  # If the instance has previously been "unproxied", this returns a
+  # copy where all proxies are re-enabled.
 
   def proxied
     self.dup.send(:reproxy!)
