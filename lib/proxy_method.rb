@@ -50,7 +50,7 @@ module ProxyMethod
     #     Dog.create
     #     # => RuntimeError: Disabled!
     #
-    # You can still access the unproxied version by prefixing 'unproxied'
+    # You can still access the unproxied version by prefixing 'unproxied_'
     # to the method name:
     #
     #     Dog.unproxied_create
@@ -74,9 +74,8 @@ module ProxyMethod
     #       end
     #     end
     #
-    #     Dog.original_create
+    #     Dog.create
     #     # => 'indirectly created'
-
 
     def proxy_class_method(*original_method_names, &proxy_block)
       options = if original_method_names.last.is_a?(Hash)
@@ -108,6 +107,87 @@ module ProxyMethod
         end
       end
     end
+
+    ##
+    # Proxy one or more inherited instance methods, so that they are not used
+    # directly. Given this base class:
+    #
+    #     class Animal
+    #       def save
+    #         'saved'
+    #       end
+    #
+    #       def update
+    #         'updated'
+    #       end
+    #     end
+    #
+    # The simplest implementation is to pass just a single method name:
+    #
+    #     class Dog < Animal
+    #       proxy_instance_method :save
+    #     end
+    #
+    #     Dog.new.save
+    #     # => RuntimeError: Disabled by proxy_method
+    #
+    #     Dog.new.upate
+    #     # 'updated'
+    #
+    #
+    # Or use the shorthand form:
+    #
+    #     class Dog < Animal
+    #       proxy_method :save
+    #     end
+    #
+    # Or multiple method names:
+    #
+    #     class Dog < Animal
+    #       proxy_method :save, :update
+    #     end
+    #
+    #     Dog.new.save
+    #     # => RuntimeError: Disabled by proxy_method
+    #
+    #     Dog.new.update
+    #     # => RuntimeError: Disabled by proxy_method
+    #
+    # With a custom error message:
+    #
+    #     class Dog < Animal
+    #       proxy_method :save, raise: 'Disabled!'
+    #     end
+    #
+    #     Dog.new.save
+    #     # => RuntimeError: Disabled!
+    #
+    # You can still access the unproxied version by prefixing 'unproxied_'
+    # to the method name:
+    #
+    #     Dog.new.unproxied_save
+    #     # => 'saved'
+    #
+    # And you can change the prefix for unproxied versions:
+    #
+    #     class Dog < Animal
+    #       proxy_method :save, prefix: 'original_'
+    #     end
+    #
+    #     Dog.new.original_save
+    #     # => 'saved'
+    #
+    # Finally, you can actually *proxy* the method, by providing an
+    # alternative block of code to run:
+    #
+    #     class Dog < Animal
+    #       proxy_method(:save) do |object, method_name, *args, &block|
+    #         "indirectly #{object.send(method_name)}"
+    #       end
+    #     end
+    #
+    #     Dog.new.save
+    #     # => 'indirectly saved'
 
     def proxy_instance_method(*original_method_names, &proxy_block)
       options = if original_method_names.last.is_a?(Hash)
