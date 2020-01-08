@@ -24,10 +24,12 @@ module ProxyMethod
     #     end
     #
     #     Dog.create
+    #
     #     # => RuntimeError: Disabled by proxy_method
     #
     #     Dog.destroy
-    #     # 'destroyed'
+    #
+    #     # => 'destroyed'
     #
     # Or multiple method names:
     #
@@ -36,9 +38,11 @@ module ProxyMethod
     #     end
     #
     #     Dog.create
+    #
     #     # => RuntimeError: Disabled by proxy_method
     #
     #     Dog.destroy
+    #
     #     # => RuntimeError: Disabled by proxy_method
     #
     # With a custom error message:
@@ -48,12 +52,14 @@ module ProxyMethod
     #     end
     #
     #     Dog.create
+    #
     #     # => RuntimeError: Disabled!
     #
     # You can still access the unproxied version by prefixing 'unproxied_'
     # to the method name:
     #
     #     Dog.unproxied_create
+    #
     #     # => 'created'
     #
     # And you can change the prefix for unproxied versions:
@@ -63,6 +69,7 @@ module ProxyMethod
     #     end
     #
     #     Dog.original_create
+    #
     #     # => 'created'
     #
     # Finally, you can actually *proxy* the method, by providing an
@@ -75,6 +82,7 @@ module ProxyMethod
     #     end
     #
     #     Dog.create
+    #
     #     # => 'indirectly created'
 
     def proxy_class_method(*original_method_names, &proxy_block)
@@ -129,10 +137,12 @@ module ProxyMethod
     #     end
     #
     #     Dog.new.save
+    #
     #     # => RuntimeError: Disabled by proxy_method
     #
     #     Dog.new.upate
-    #     # 'updated'
+    #
+    #     # => 'updated'
     #
     #
     # Or use the shorthand form:
@@ -148,9 +158,11 @@ module ProxyMethod
     #     end
     #
     #     Dog.new.save
+    #
     #     # => RuntimeError: Disabled by proxy_method
     #
     #     Dog.new.update
+    #
     #     # => RuntimeError: Disabled by proxy_method
     #
     # With a custom error message:
@@ -160,12 +172,14 @@ module ProxyMethod
     #     end
     #
     #     Dog.new.save
+    #
     #     # => RuntimeError: Disabled!
     #
     # You can still access the unproxied version by prefixing 'unproxied_'
     # to the method name:
     #
     #     Dog.new.unproxied_save
+    #
     #     # => 'saved'
     #
     # And you can change the prefix for unproxied versions:
@@ -175,6 +189,7 @@ module ProxyMethod
     #     end
     #
     #     Dog.new.original_save
+    #
     #     # => 'saved'
     #
     # Finally, you can actually *proxy* the method, by providing an
@@ -187,6 +202,7 @@ module ProxyMethod
     #     end
     #
     #     Dog.new.save
+    #
     #     # => 'indirectly saved'
 
     def proxy_instance_method(*original_method_names, &proxy_block)
