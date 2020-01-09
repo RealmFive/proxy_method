@@ -23,12 +23,10 @@ module ProxyMethod
     #       proxy_class_method :create
     #     end
     #
-    #     Dog.create
-    #
+    #     Dog.create  
     #     # => RuntimeError: Disabled by proxy_method
     #
-    #     Dog.destroy
-    #
+    #     Dog.destroy  
     #     # => 'destroyed'
     #
     # Or multiple method names:
@@ -37,12 +35,10 @@ module ProxyMethod
     #       proxy_class_method :create, :destroy
     #     end
     #
-    #     Dog.create
-    #
+    #     Dog.create  
     #     # => RuntimeError: Disabled by proxy_method
     #
-    #     Dog.destroy
-    #
+    #     Dog.destroy  
     #     # => RuntimeError: Disabled by proxy_method
     #
     # With a custom error message:
@@ -51,15 +47,13 @@ module ProxyMethod
     #       proxy_class_method :create, raise: 'Disabled!'
     #     end
     #
-    #     Dog.create
-    #
+    #     Dog.create  
     #     # => RuntimeError: Disabled!
     #
     # You can still access the unproxied version by prefixing 'unproxied_'
     # to the method name:
     #
-    #     Dog.unproxied_create
-    #
+    #     Dog.unproxied_create  
     #     # => 'created'
     #
     # And you can change the prefix for unproxied versions:
@@ -68,8 +62,7 @@ module ProxyMethod
     #       proxy_class_method :create, prefix: 'original_'
     #     end
     #
-    #     Dog.original_create
-    #
+    #     Dog.original_create  
     #     # => 'created'
     #
     # Finally, you can actually *proxy* the method, by providing an
@@ -81,8 +74,7 @@ module ProxyMethod
     #       end
     #     end
     #
-    #     Dog.create
-    #
+    #     Dog.create  
     #     # => 'indirectly created'
 
     def proxy_class_method(*original_method_names, &proxy_block)
@@ -136,12 +128,10 @@ module ProxyMethod
     #       proxy_instance_method :save
     #     end
     #
-    #     Dog.new.save
-    #
+    #     Dog.new.save  
     #     # => RuntimeError: Disabled by proxy_method
     #
-    #     Dog.new.upate
-    #
+    #     Dog.new.upate  
     #     # => 'updated'
     #
     #
@@ -157,12 +147,10 @@ module ProxyMethod
     #       proxy_method :save, :update
     #     end
     #
-    #     Dog.new.save
-    #
+    #     Dog.new.save  
     #     # => RuntimeError: Disabled by proxy_method
     #
-    #     Dog.new.update
-    #
+    #     Dog.new.update  
     #     # => RuntimeError: Disabled by proxy_method
     #
     # With a custom error message:
@@ -171,15 +159,13 @@ module ProxyMethod
     #       proxy_method :save, raise: 'Disabled!'
     #     end
     #
-    #     Dog.new.save
-    #
+    #     Dog.new.save  
     #     # => RuntimeError: Disabled!
     #
     # You can still access the unproxied version by prefixing 'unproxied_'
     # to the method name:
     #
-    #     Dog.new.unproxied_save
-    #
+    #     Dog.new.unproxied_save  
     #     # => 'saved'
     #
     # And you can change the prefix for unproxied versions:
@@ -188,8 +174,7 @@ module ProxyMethod
     #       proxy_method :save, prefix: 'original_'
     #     end
     #
-    #     Dog.new.original_save
-    #
+    #     Dog.new.original_save  
     #     # => 'saved'
     #
     # Finally, you can actually *proxy* the method, by providing an
@@ -201,8 +186,7 @@ module ProxyMethod
     #       end
     #     end
     #
-    #     Dog.new.save
-    #
+    #     Dog.new.save  
     #     # => 'indirectly saved'
 
     def proxy_instance_method(*original_method_names, &proxy_block)
