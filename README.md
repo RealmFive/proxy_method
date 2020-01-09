@@ -49,13 +49,13 @@ You can do this:
     Turtle.create
     # => RuntimeError: Disabled by proxy_method
     
-    Turtle.new.save
+    Turtle.new.save  
     # => RuntimeError: Disabled by proxy_method
     
-    Turtle.unproxied_create
+    Turtle.unproxied_create  
     # => 'created'
     
-    Turtle.new.unproxied_save
+    Turtle.new.unproxied_save  
     # => 'saved'
 
 Raise a custom error message:
@@ -66,7 +66,7 @@ Raise a custom error message:
       proxy_method :save, raise: "Don't save here, use an interactor!"
     end
     
-    CustomCow.new.save
+    CustomCow.new.save  
     # => RunTimeError: Don't save here, use an interactor!
 
 Specify multiple methods at once:
@@ -77,10 +77,10 @@ Specify multiple methods at once:
       proxy_method :save, :update, raise: "Use an interactor!"
     end
     
-    MultiMonkey.new.save
+    MultiMonkey.new.save  
     # => RunTimeError: Use an interactor!
     
-    MultiMonkey.new.update
+    MultiMonkey.new.update  
     # => RunTimeError: Use an interactor!    
 
 Supply your own prefix for the original, unproxied method:
@@ -91,7 +91,7 @@ Supply your own prefix for the original, unproxied method:
       proxy_method :save, prefix: 'pelican_'
     end
     
-    PrefixPelican.new.pelican_save
+    PrefixPelican.new.pelican_save  
     # => 'saved'
 
 Use an "unproxied" version of an instance:
@@ -105,10 +105,10 @@ Use an "unproxied" version of an instance:
     duck = DefaultDuck.new
     duck_unproxied = duck.unproxied
     
-    duck.save
+    duck.save  
     # => RunTimeError: Disabled by proxy_method 
     
-    duck_unproxied.save
+    duck_unproxied.save  
     # => 'saved'
 
 
@@ -122,10 +122,10 @@ You can also use an unproxied version of the entire class:
     duck = DefaultDuck.new
     duck_unproxied = DefaultDuck.unproxied.new
     
-    duck.save
+    duck.save  
     # => RunTimeError: Disabled by proxy_method 
     
-    duck_unproxied.save
+    duck_unproxied.save  
     # => 'saved'
 
 Run a custom block, instead of raising an exception at all. In other words, *actually* proxy the
@@ -140,7 +140,7 @@ yourself:
       end
     end
     
-    MethodicalMeerkat.new.save
+    MethodicalMeerkat.new.save  
     # => 'indirectly saved!'
 
 The object which is passed to the block is already unproxied, so it's free to use as you'd expect.
@@ -155,10 +155,10 @@ From there, you can allow your proxied block it to be used for multiple methods:
       end
     end
     
-    MethodicalMeerkat.new.save
+    MethodicalMeerkat.new.save  
     # => 'indirectly saved!'
     
-    MethodicalMeerkat.new.update
+    MethodicalMeerkat.new.update  
     # => 'indirectly updated!'    
 
 Provide your proxied block with args and a block of its own. The block will be given the
@@ -173,10 +173,10 @@ so it works in much the same way.
       end
     end
     
-    MethodicalMeerkat.new.save
+    MethodicalMeerkat.new.save  
     # => 'indirectly saved!'
     
-    MethodicalMeerkat.new.update
+    MethodicalMeerkat.new.update  
     # => 'indirectly updated!'    
 
 
